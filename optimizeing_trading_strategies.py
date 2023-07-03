@@ -20,7 +20,7 @@ if upload_files:
    # Merge the DataFrames into one DataFrame
    # data = pd.merge(*df_list, on='SequenceNo', how='inner')
 
-   strategy = df['MagicNo.'].unique()
+   strategy = df['MagicNo'].unique()
 # convert TimeStamp column to datetime type
    df['TimeStamp'] = pd.to_datetime(df['TimeStamp'])
 
@@ -34,7 +34,7 @@ if upload_files:
    fig = go.Figure()
 
    for i in strategy:
-      df_strategy = df[df['MagicNo.'] == i]
+      df_strategy = df[df['MagicNo'] == i]
       fig.add_trace(go.Scatter(x=df_strategy['TimeStamp'], y=df_strategy['ClosedP/L'],
          name=str(i),
 
