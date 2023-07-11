@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 
-st.title('Optimizeing Trading Strategies')
+st.title('Optimizing Trading Strategies')
 
 upload_files = st.file_uploader('Choose a CSV file', type='csv', accept_multiple_files=True)
 
@@ -28,11 +28,11 @@ if upload_files:
    
 
 
-   # fig = px.line(df, x='TimeStamp', y='Closed P/L', color='MagicNo.', markers=True)
-   # fig = go.Figure(data=go.Scatter(x=df['TimeStamp'], y=df['Closed P/L'], ))
+   fig = px.line(df, x='TimeStamp', y='Closed P/L', color='MagicNo.', markers=True)
+   fig = go.Figure(data=go.Scatter(x=df['TimeStamp'], y=df['Closed P/L'], ))
 
    fig = go.Figure()
-
+   negative_profit = go.Figure() 
    for i in strategy:
       df_strategy = df[df['MagicNo'] == i]
       fig.add_trace(go.Scatter(x=df_strategy['TimeStamp'], y=df_strategy['ClosedP/L'],
@@ -45,24 +45,24 @@ if upload_files:
                   xaxis_title='TimeStamp',
                   yaxis_title='Closed P/L')
 
-
-
-   # # Magic No 6835025
-   # trace1_hourly_profit = go.Bar(
-   #    x = hourly_profit.index, 
-   #    y=hourly_profit['Profit'],
-   #    name = 'Profit Close'
-   # )
-
-   # figures_hourly_profit = [trace1_hourly_profit]
-   # layout = go.Layout(barmode = 'group')
-   # fig_hourly_profit = go.Figure(data = figures_hourly_profit, layout = layout)
-
-
-   # fig_hourly_profit.update_layout(title=dict(text=f"P/L hourly {strategy}"),
-   #    xaxis = dict(
-   #       tickmode = 'linear')
-   # )
-
    st.plotly_chart(fig)
 
+      #  Magic No 6835025
+   negative_profit = df.groupby('MagicNo')['FloatingProfit'].agg('min')
+   lastpl = df.groupby('MagicNo')['ClosedP/L'].agg('last')
+ 
+   # strategies = [str(s) for s in negative_profit.index]
+   strategies = ['0', '4750', '47100', '47200', '475025', '475050', '4750200']
+
+   plot = go.Figure(data=[go.Bar(
+      x = strategies, 
+      y= negative_profit.values,
+     name='Negative Profit'),
+   go.Bar(
+      x = strategies, 
+      y= lastpl.values,
+      name = 'Last PL')
+       
+   ], )
+
+   st.plotly_chart(plot)
